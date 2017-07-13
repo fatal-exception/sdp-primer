@@ -15,20 +15,11 @@ object Hammurabi {
 
     printIntroductoryMessage()
 
-    for (year <- 1 to 1) {
-      val landBought: Int = askHowMuchLandToBuy(bushelsInStorage, pricePerAcre)
-      if (landBought == 0) {
-        val landSold: Int = askHowMuchLandToSell(acresOwned)
-        acresOwned -= landSold
-        bushelsInStorage += landSold * pricePerAcre
-      } else {
-        acresOwned += landBought
-        bushelsInStorage -= landBought * pricePerAcre
-      }
+    for (year <- 1 to 10) {
       println(
         s"""
           |O great Hammurabi!
-          |You are in year ${year} of your ten year rule.
+          |You are in year $year of your ten year rule.
           |In the previous year 0 people starved to death.
           |In the previous year 5 people entered the kingdom.
           |The population is now 100.
@@ -39,6 +30,23 @@ object Hammurabi {
           |There were 0 deaths from the plague.
         """.stripMargin)
 
+      // buying or selling
+      val landBought: Int = askHowMuchLandToBuy(bushelsInStorage, pricePerAcre)
+      if (landBought == 0) {
+        val landSold: Int = askHowMuchLandToSell(acresOwned)
+        acresOwned -= landSold
+        bushelsInStorage += landSold * pricePerAcre
+      } else {
+        acresOwned += landBought
+        bushelsInStorage -= landBought * pricePerAcre
+      }
+
+      // feeding
+      bushelsInStorage -= askHowMuchGrainToFeedThePeople(bushelsInStorage)
+
+      // seeding
+      val acresPlantedWithSeed: Int = askHowManyAcresToPlantWithSeed(acresOwned)
+      bushelsInStorage += plantWithSeed * bushelsPerAcre
     }
   }
 
@@ -79,12 +87,32 @@ object Hammurabi {
   }
 
   def askHowMuchLandToSell(acresOwned: Int) = {
-    var acresToSell = readInt("How many acres will you sell?")
+    var acresToSell = readInt("How many acres will you sell? ")
     while (acresToSell < 0 || acresToSell > acresOwned) {
       println("O Great Hammurabi, a witty answer, but please enlighten us again!")
-      acresToSell = readInt("How many acres will you buy? ")
+      acresToSell = readInt("How many acres will you sell? ")
     }
     acresToSell
   }
 
+  def askHowMuchGrainToFeedThePeople(bushelsInStorage: Int) = {
+    var grainToFeed = readInt("How much grain will you feed the people?")
+    while (grainToFeed > bushelsInStorage) {
+      println("O Great Hammurabi, by our own failings, we do not have that much grain!")
+      grainToFeed = readInt("How many acres will you buy? ")
+    }
+    grainToFeed
+  }
+
+  def askHowManyAcresToPlantWithSeed(acresOwned: Int) = {
+    var acresToSeed = readInt("How many acres will you plant with seed, O lord? ")
+    while (acresToSeed > acresOwned) {
+      println("O Great Hammurabi, we are in stitches - you know full well we do not own that much land!")
+      acresToSeed = readInt("How many acres will you eplant with seed, O lord? ")
+    }
+    acresToSeed
+  }
+  def main(args: Array[String]) = {
+    hammurabi()
+  }
 }
