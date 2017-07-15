@@ -50,7 +50,7 @@ object Hammurabi {
       val acresPlantedWithSeed: Int = askHowManyAcresToPlantWithSeed(acresOwned)
       bushelsInStorage = bushelsInStorage + (acresPlantedWithSeed * bushelsPerAcre)
       population = checkPlague(population)
-      val fedPopulation: Option[Int] = checkStarvation(population, amountToFeedThePeople)
+      val (fedPopulation: Option[Int], peopleStarved: Boolean) = checkStarvation(population, amountToFeedThePeople)
       if (fedPopulation.isEmpty) throwOutOfOffice()
       else population = fedPopulation.get
     }
@@ -61,11 +61,16 @@ object Hammurabi {
     System.exit(1)
   }
 
-  def checkStarvation(population: Int, amountToFeedThePeople: Int): Option[Int] = {
+  def checkStarvation(population: Int, amountToFeedThePeople: Int): (Option[Int], Boolean) = {
+    var peopleStarved = false
     var howManyStarved = (population * 20) - amountToFeedThePeople
-    howManyStarved = if (howManyStarved < 0) 0 else howManyStarved  // no negative numbers of starving people
-    if ( howManyStarved.toDouble / population.toDouble >= 0.45) None
-    else Option(population)
+
+    if (howManyStarved <= 0) {
+      howManyStarved = 0  // no negative numbers of starving people
+    } else peopleStarved = true
+
+    if ( howManyStarved.toDouble / population.toDouble >= 0.45) (None, peopleStarved)
+    else (Option(population), peopleStarved)
   }
 
   def checkPlague(population: Int): Int = {
