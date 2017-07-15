@@ -1,4 +1,5 @@
 import scala.io.StdIn.readLine
+import scala.util.Random
 object Hammurabi {
   def hammurabi() = {
 
@@ -42,12 +43,43 @@ object Hammurabi {
       }
 
       // feeding
-      bushelsInStorage -= askHowMuchGrainToFeedThePeople(bushelsInStorage)
+      val amountToFeedThePeople: Int = askHowMuchGrainToFeedThePeople(bushelsInStorage)
+      bushelsInStorage -= amountToFeedThePeople
 
       // seeding
       val acresPlantedWithSeed: Int = askHowManyAcresToPlantWithSeed(acresOwned)
-      bushelsInStorage += plantWithSeed * bushelsPerAcre
+      bushelsInStorage = bushelsInStorage + (acresPlantedWithSeed * bushelsPerAcre)
+      population = checkPlague(population)
+      val fedPopulation: Option[Int] = checkStarvation(population, amountToFeedThePeople)
+      if (fedPopulation.isEmpty) throwOutOfOffice()
+      else population = fedPopulation.get
     }
+  }
+
+  def throwOutOfOffice() = {
+    println("Too many of the people starved. You have been thrown out of office!")
+    System.exit(1)
+  }
+
+  def checkStarvation(population: Int, amountToFeedThePeople: Int): Option[Int] = {
+    var howManyStarved = (population * 20) - amountToFeedThePeople
+    howManyStarved = if (howManyStarved < 0) 0 else howManyStarved  // no negative numbers of starving people
+    if ( howManyStarved.toDouble / population.toDouble >= 0.45) None
+    else Option(population)
+  }
+
+  def checkPlague(population: Int): Int = {
+    if (Random.nextInt(100 + 1) < 16) {
+      println("Oh no! A horrible plague has hit your land. Your population has fallen from" +
+      population + " to " + population / 2)
+      return population / 2
+    }
+    else {
+      println("No plague this year, well done glorious leader")
+      return population
+    }
+
+
   }
 
   def printIntroductoryMessage() = {
