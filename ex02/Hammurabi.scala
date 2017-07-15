@@ -61,8 +61,16 @@ object Hammurabi {
       // migration
       population = checkMigration(population, peopleStarved, bushelsInStorage, acresOwned)
 
+      // harvest
+      bushelsInStorage = harvest(bushelsInStorage, acresPlantedWithSeed)
 
     }
+  }
+
+  def harvest(bushelsInStorage: Int, acresPlantedWithSeed: Int): Int = {
+    val cropYield: Int = Random.nextInt(8) + 1
+    bushelsInStorage + (acresPlantedWithSeed * cropYield)
+
   }
 
   def checkMigration(population: Int, peopleStarved: Boolean, bushelsInStorage: Int, acresOwned: Int) = {
@@ -92,7 +100,7 @@ object Hammurabi {
   }
 
   def checkPlague(population: Int): Int = {
-    if (Random.nextInt(100 + 1) < 16) {
+    if (Random.nextInt(100) < 15) {
       println("Oh no! A horrible plague has hit your land. Your population has fallen from" +
       population + " to " + population / 2)
       return population / 2
