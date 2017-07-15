@@ -31,7 +31,7 @@ object Hammurabi {
           |There were 0 deaths from the plague.
         """.stripMargin)
 
-      // buying or selling
+      // buying or selling land
       val landBought: Int = askHowMuchLandToBuy(bushelsInStorage, pricePerAcre)
       if (landBought == 0) {
         val landSold: Int = askHowMuchLandToSell(acresOwned)
@@ -49,11 +49,25 @@ object Hammurabi {
       // seeding
       val acresPlantedWithSeed: Int = askHowManyAcresToPlantWithSeed(acresOwned)
       bushelsInStorage = bushelsInStorage + (acresPlantedWithSeed * bushelsPerAcre)
+
+      // plague
       population = checkPlague(population)
+
+      // starvation
       val (fedPopulation: Option[Int], peopleStarved: Boolean) = checkStarvation(population, amountToFeedThePeople)
       if (fedPopulation.isEmpty) throwOutOfOffice()
       else population = fedPopulation.get
+
+      // migration
+      population = checkMigration(population, peopleStarved, bushelsInStorage, acresOwned)
+
+
     }
+  }
+
+  def checkMigration(population: Int, peopleStarved: Boolean, bushelsInStorage: Int, acresOwned: Int) = {
+    if (peopleStarved) population
+    else (20 * acresOwned + bushelsInStorage) / (100 * population) + 1
   }
 
   def throwOutOfOffice() = {
@@ -67,7 +81,11 @@ object Hammurabi {
 
     if (howManyStarved <= 0) {
       howManyStarved = 0  // no negative numbers of starving people
-    } else peopleStarved = true
+      println("Nobody starved - just what we would expect with Hammirabi on the throne.")
+    } else {
+      peopleStarved = true
+      println("Due to no fault of yours, wonderful ruler, sadly " + howManyStarved + " people starved.")
+    }
 
     if ( howManyStarved.toDouble / population.toDouble >= 0.45) (None, peopleStarved)
     else (Option(population), peopleStarved)
