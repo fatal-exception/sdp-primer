@@ -1,3 +1,4 @@
+package main
 import scala.io.StdIn.readLine
 import scala.util.Random
 object Hammurabi {
@@ -20,16 +21,16 @@ object Hammurabi {
       // TODO interpolate
       println(
         s"""
-          |O great Hammurabi!
-          |You are in year $year of your ten year rule.
-          |In the previous year $starved people starved to death.
-          |In the previous year $immigrants people entered the kingdom.
-          |The population is now $population.
-          |We harvested $harvest bushels at $bushelsPerAcre bushels per acre.
-          |Rats destroyed $rats_ate bushels, leaving $bushelsInStorage bushels in storage.
-          |The city owns $acresOwned acres of land.
-          |Land is currently worth $pricePerAcre bushels per acre.
-          |There were $plagueDeaths deaths from the plague.
+           |O great Hammurabi!
+           |You are in year $year of your ten year rule.
+           |In the previous year $starved people starved to death.
+           |In the previous year $immigrants people entered the kingdom.
+           |The population is now $population.
+           |We harvested $harvest bushels at $bushelsPerAcre bushels per acre.
+           |Rats destroyed $rats_ate bushels, leaving $bushelsInStorage bushels in storage.
+           |The city owns $acresOwned acres of land.
+           |Land is currently worth $pricePerAcre bushels per acre.
+           |There were $plagueDeaths deaths from the plague.
         """.stripMargin)
 
       // buying or selling land
@@ -137,7 +138,7 @@ object Hammurabi {
   def checkPlague(population: Int): Int = {
     if (Random.nextInt(100) < 15) {
       println("Oh no! A horrible plague has hit your land. Your population has fallen from " +
-      population + " to " + population / 2)
+        population + " to " + population / 2)
       return population / 2
     }
     else {
@@ -151,18 +152,18 @@ object Hammurabi {
   def printIntroductoryMessage() = {
     println(
       """
-  |Congratulations, you are the newest ruler of ancient Samaria, elected
-  |for a ten year term of office. Your duties are to dispense food, direct
-  |farming, and buy and sell land as needed to support your people. Watch
-  |out for rat infestations and the plague! Grain is the general currency,
-  |measured in bushels. The following will help you in your decisions:
-  |  * Each person needs at least 20 bushels of grain per year to survive.
-  |  * Each person can farm at most 10 acres of land.
-  |  * It takes 2 bushels of grain to farm an acre of land.
-  |  * The market price for land fluctuates yearly.
-  |  Rule wisely and you will be showered with appreciation at the end of
-  |your term. Rule poorly and you will be kicked out of office!
-  """.stripMargin)
+        |Congratulations, you are the newest ruler of ancient Samaria, elected
+        |for a ten year term of office. Your duties are to dispense food, direct
+        |farming, and buy and sell land as needed to support your people. Watch
+        |out for rat infestations and the plague! Grain is the general currency,
+        |measured in bushels. The following will help you in your decisions:
+        |  * Each person needs at least 20 bushels of grain per year to survive.
+        |  * Each person can farm at most 10 acres of land.
+        |  * It takes 2 bushels of grain to farm an acre of land.
+        |  * The market price for land fluctuates yearly.
+        |  Rule wisely and you will be showered with appreciation at the end of
+        |your term. Rule poorly and you will be kicked out of office!
+      """.stripMargin)
   }
 
   def readInt(message: String): Int = {
