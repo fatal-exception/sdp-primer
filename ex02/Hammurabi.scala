@@ -17,18 +17,19 @@ object Hammurabi {
     printIntroductoryMessage()
 
     for (year <- 1 to 10) {
+      // TODO interpolate
       println(
         s"""
           |O great Hammurabi!
           |You are in year $year of your ten year rule.
-          |In the previous year 0 people starved to death.
-          |In the previous year 5 people entered the kingdom.
-          |The population is now 100.
-          |We harvested 3000 bushels at 3 bushels per acre.
-          |Rats destroyed 200 bushels, leaving 2800 bushels in storage.
-          |The city owns 1000 acres of land.
-          |Land is currently worth 19 bushels per acre.
-          |There were 0 deaths from the plague.
+          |In the previous year $starved people starved to death.
+          |In the previous year $immigrants people entered the kingdom.
+          |The population is now $population.
+          |We harvested $harvest bushels at $bushelsPerAcre bushels per acre.
+          |Rats destroyed $rats_ate bushels, leaving $bushelsInStorage bushels in storage.
+          |The city owns $acresOwned acres of land.
+          |Land is currently worth $pricePerAcre bushels per acre.
+          |There were $plagueDeaths deaths from the plague.
         """.stripMargin)
 
       // buying or selling land
@@ -39,7 +40,7 @@ object Hammurabi {
         bushelsInStorage += landSold * pricePerAcre
       } else {
         acresOwned += landBought
-        bushelsInStorage -= landBought * pricePerAcre
+        bushelsInStorage -= (landBought * pricePerAcre)
       }
 
       // feeding
@@ -48,7 +49,7 @@ object Hammurabi {
 
       // seeding
       val acresPlantedWithSeed: Int = askHowManyAcresToPlantWithSeed(acresOwned)
-      bushelsInStorage = bushelsInStorage + (acresPlantedWithSeed * bushelsPerAcre)
+      println("-----")
 
       // plague
       population = checkPlague(population)
@@ -59,18 +60,52 @@ object Hammurabi {
       else population = fedPopulation.get
 
       // migration
-      population = checkMigration(population, peopleStarved, bushelsInStorage, acresOwned)
+      immigrants = checkMigration(population, peopleStarved, bushelsInStorage, acresOwned)
+      population += immigrants
 
       // harvest
-      bushelsInStorage = harvest(bushelsInStorage, acresPlantedWithSeed)
+      bushelsPerAcre = checkCropYield()
+      harvest = checkHarvest(acresPlantedWithSeed, bushelsPerAcre)
+      bushelsInStorage += harvest
 
+      // rats
+      val (newBushelsInStorage: Int, new_rats_ate: Int) = checkRats(bushelsInStorage)
+      bushelsInStorage = newBushelsInStorage
+      rats_ate = new_rats_ate
+      println("-----")
+
+      // land price
+      pricePerAcre = newLandPrice()
     }
   }
 
-  def harvest(bushelsInStorage: Int, acresPlantedWithSeed: Int): Int = {
-    val cropYield: Int = Random.nextInt(8) + 1
-    bushelsInStorage + (acresPlantedWithSeed * cropYield)
+  /**
+    * Land costs from 17 to 23 bushels per year at random
+    * @return the cost of land for next year
+    */
+  def newLandPrice(): Int = {
+    return Random.nextInt(8) + 17
+  }
 
+  def checkRats(bushelsInStorage: Int): (Int, Int) = {
+    if (Random.nextInt(100) < 40) {
+      println("Oh no! Your great kingdom has been plagued by rats...")
+      val tenthsOfGrainEaten: Int = Random.nextInt(3) + 1
+      val ratsAte:Int = (bushelsInStorage / 10) * tenthsOfGrainEaten
+      (bushelsInStorage - ratsAte, ratsAte)
+    }
+    else {
+      println("Well done your highness! No rats this year")
+      (bushelsInStorage, 0)
+    }
+  }
+
+  def checkCropYield(): Int = {
+    return Random.nextInt(8) + 1
+  }
+
+  def checkHarvest(acresPlantedWithSeed: Int, cropYield: Int): Int = {
+    acresPlantedWithSeed * cropYield
   }
 
   def checkMigration(population: Int, peopleStarved: Boolean, bushelsInStorage: Int, acresOwned: Int) = {
@@ -89,7 +124,7 @@ object Hammurabi {
 
     if (howManyStarved <= 0) {
       howManyStarved = 0  // no negative numbers of starving people
-      println("Nobody starved - just what we would expect with Hammirabi on the throne.")
+      println("Nobody starved - just what we would expect with Hammurabi on the throne.")
     } else {
       peopleStarved = true
       println("Due to no fault of yours, wonderful ruler, sadly " + howManyStarved + " people starved.")
@@ -101,7 +136,7 @@ object Hammurabi {
 
   def checkPlague(population: Int): Int = {
     if (Random.nextInt(100) < 15) {
-      println("Oh no! A horrible plague has hit your land. Your population has fallen from" +
+      println("Oh no! A horrible plague has hit your land. Your population has fallen from " +
       population + " to " + population / 2)
       return population / 2
     }
@@ -159,7 +194,7 @@ object Hammurabi {
   }
 
   def askHowMuchGrainToFeedThePeople(bushelsInStorage: Int) = {
-    var grainToFeed = readInt("How much grain will you feed the people?")
+    var grainToFeed = readInt("How much grain will you feed the people? ")
     while (grainToFeed > bushelsInStorage) {
       println("O Great Hammurabi, by our own failings, we do not have that much grain!")
       grainToFeed = readInt("How many acres will you buy? ")
@@ -171,7 +206,7 @@ object Hammurabi {
     var acresToSeed = readInt("How many acres will you plant with seed, O lord? ")
     while (acresToSeed > acresOwned) {
       println("O Great Hammurabi, we are in stitches - you know full well we do not own that much land!")
-      acresToSeed = readInt("How many acres will you eplant with seed, O lord? ")
+      acresToSeed = readInt("How many acres will you plant with seed, O lord? ")
     }
     acresToSeed
   }
