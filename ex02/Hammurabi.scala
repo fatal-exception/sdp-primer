@@ -109,7 +109,7 @@ object Hammurabi {
   }
 
   def checkMigration(population: Int, peopleStarved: Boolean, bushelsInStorage: Int, acresOwned: Int) = {
-    if (peopleStarved) population
+    if (peopleStarved) 0
     else (20 * acresOwned + bushelsInStorage) / (100 * population) + 1
   }
 
