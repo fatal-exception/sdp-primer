@@ -6,8 +6,6 @@ object NumberPersonalities {
 
   }
 
-  def isPrime(n: Int): Boolean = {
-    false
-  }
+  def isPrime(n: Int): Boolean = ! ((2 until n-1) exists (n % _ == 0))
 
 }
