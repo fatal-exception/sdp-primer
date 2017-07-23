@@ -7,12 +7,15 @@ object NumberPersonalities {
 
   def printPersonalities(limit: Int) = {
     val personalities: Map[String, (Int => Boolean)] = TreeMap(
+      "a" -> isAbundant,
       "c" -> isComposite,
+      "d" -> isDeficient,
       "dis" -> isDishonest,
       "h" -> isHappy,
       "ht" -> isHonest,
       "per" -> isPerfect,
       "p" -> isPrime,
+      "pe" -> isPerfect,
       "pr" -> isPronic,
       "sm" -> isSmug,
       "s" -> isSquare,
@@ -44,7 +47,6 @@ object NumberPersonalities {
     }
     worker == 1
   }
-
   def isUnhappy(n: Int): Boolean = ! isHappy(n)
 
   def isTriangular(n: Int): Boolean = {
