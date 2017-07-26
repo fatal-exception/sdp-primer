@@ -5,7 +5,6 @@ class Coffee(val shots: Int = 2,
              val syrup: String = "") {
 
   var result = ""
-  println(shots, decaf, milk, toGo, syrup)
 
   def caf: Int = {
     shots - decaf
