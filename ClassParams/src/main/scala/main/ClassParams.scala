@@ -43,6 +43,22 @@ object ClassParams {
     }
   }
 
+  class Planet(val moons: Int = 1, val name: String, val description: String) {
+    def hasMoon: Boolean = moons > 0
+  }
+
+  class Item(val name: String, val price: Double) {
+
+    def roundTo2Decimals(d: Double): Double = {
+      "%.2f".format(d).toDouble
+    }
+
+    def cost(grocery: Boolean = false, medication: Boolean = false, taxRate: Double = 0.1): Double = {
+      val effectiveTaxRate = if (grocery || medication) 0.0 else taxRate
+      roundTo2Decimals(price * (1 + effectiveTaxRate))
+    }
+  }
+
   def main(args: Array[String]) {
     val family1 = new Family("Mom", "Dad", "Sally", "Dick")
     assert(family1.familySize() == 4)
@@ -72,5 +88,18 @@ object ClassParams {
     val t2 = new SimpleTime2(hours=10)
     assert(t2.hours == 10)
     assert(t2.minutes == 0)
+
+    val p = new Planet(name = "Mercury", description = "small and hot planet", moons = 0)
+    assert(p.hasMoon == false)
+
+    val earth = new Planet(moons = 1, name = "Earth", description = "a hospitable planet")
+    assert(earth.hasMoon)
+
+    val flour = new Item(name="flour", 4)
+    assert(flour.cost(grocery=true) == 4)
+    val sunscreen = new Item(name="sunscreen", 3)
+    assert(sunscreen.cost() == 3.3)
+    val tv = new Item(name="television", 500)
+    assert(tv.cost(taxRate = 0.06) == 530)
   }
 }
