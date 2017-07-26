@@ -1,2 +1,11 @@
-val v = Vector(1,2,3,4)
-println(v.reduce((s: StringBuilder, i: Int) => s.append(i)))
+object Janitor	{
+  var	salary:	Double = 15.00
+}
+class	Janitor(name:	String) {
+  def getSalary(): Double = {
+    Janitor.salary
+  }
+}
+
+val j = new Janitor("bob")
+val d: Double = j.getSalary()
